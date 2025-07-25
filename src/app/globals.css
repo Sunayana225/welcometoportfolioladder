@@ -1,0 +1,74 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
+
+:root {
+  --background: #FDF6EE;
+  --foreground: #3D2914;
+  --primary: #3D2914;
+  --primary-light: #4A3429;
+  --secondary: #FDF6EE;
+  --accent: #C4A484;
+  --muted: #F5EDE3;
+  --border: #E8D5C4;
+  --card: #F5EDE3;
+  --soft-pink: #F2D3C2;
+  --soft-blue: #eff6ff;
+  --soft-purple: #f3e8ff;
+  --soft-green: #f0fdf4;
+  --heart-gradient-start: #FDF6EE;
+  --heart-gradient-end: #E8D5C4;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #1a202c;
+    --foreground: #f7fafc;
+  }
+}
+
+body {
+  background: linear-gradient(135deg, var(--heart-gradient-start) 0%, var(--heart-gradient-end) 100%);
+  color: var(--foreground);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  min-height: 100vh;
+}
+
+.gradient-bg {
+  background: linear-gradient(135deg, var(--heart-gradient-start) 0%, var(--heart-gradient-end) 100%);
+}
+
+.soft-shadow {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.glass-effect {
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+/* Fix input text colors */
+input, textarea, select {
+  color: #3D2914 !important;
+}
+
+input::placeholder, textarea::placeholder {
+  color: #6B7280 !important;
+}
+
+/* Ensure form inputs have proper styling */
+.form-input {
+  color: #3D2914 !important;
+  background-color: white !important;
+}
+
+.form-input::placeholder {
+  color: #9CA3AF !important;
+}
