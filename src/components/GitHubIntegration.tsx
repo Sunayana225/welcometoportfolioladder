@@ -50,9 +50,25 @@ export default function GitHubIntegration({ onProjectsGenerated, huggingfaceApiK
       let projects: ProjectSuggestion[] = [];
 
       if (inputType === 'url') {
+        // Parse GitHub URL to extract owner and repo
+        const url = githubInput.trim();
+        const match = url.match(/github\.com\/([^\/]+)\/([^\/]+)/);
+        if (!match) {
+          throw new Error('Invalid GitHub repository URL');
+        }
+        const [, owner, repo] = match;
+
         // Analyze single repository with enhanced analysis
-        const project = await analyzeGitHubRepositoryEnhanced(githubInput.trim(), huggingfaceApiKey);
-        if (project) {
+        const analysis = await analyzeGitHubRepositoryEnhanced(owner, repo, huggingfaceApiKey);
+        if (analysis) {
+          const project: ProjectSuggestion = {
+            id: analysis.repo.id.toString(),
+            title: analysis.repo.name.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+            description: analysis.aiDescription || analysis.repo.description || `A ${analysis.repo.language || 'software'} project`,
+            technologies: Object.keys(analysis.languages),
+            githubUrl: analysis.repo.html_url,
+            featured: analysis.repo.stargazers_count > 0
+          };
           projects = [project];
         } else {
           throw new Error('Could not analyze the repository');
@@ -60,7 +76,7 @@ export default function GitHubIntegration({ onProjectsGenerated, huggingfaceApiK
       } else {
         // Analyze user's repositories with enhanced analysis
         const username = githubInput.trim().replace('@', '');
-        projects = await analyzeUserRepositoriesEnhanced(username, huggingfaceApiKey, 6);
+        projects = await analyzeUserRepositoriesEnhanced(username, huggingfaceApiKey);
         if (projects.length === 0) {
           throw new Error('No repositories found or could not analyze user repositories');
         }
