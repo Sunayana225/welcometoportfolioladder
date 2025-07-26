@@ -13,6 +13,8 @@ import ProjectsForm from './forms/ProjectsForm';
 import ExperienceForm from './forms/ExperienceForm';
 import EducationForm from './forms/EducationForm';
 import CertificationsForm from './forms/CertificationsForm';
+import VolunteerExperienceForm from './forms/VolunteerExperienceForm';
+import FeaturedSitesForm from './forms/FeaturedSitesForm';
 import ThemeSelector from './ThemeSelector';
 
 const portfolioSchema = z.object({
@@ -78,6 +80,26 @@ const portfolioSchema = z.object({
     expiryDate: z.string().optional(),
     credentialUrl: z.string().url('Please enter a valid URL').optional().or(z.literal('')),
   })),
+  volunteerExperience: z.array(z.object({
+    id: z.string(),
+    organization: z.string().min(1, 'Organization name is required'),
+    role: z.string().min(1, 'Role/position is required'),
+    startDate: z.string().min(1, 'Start date is required'),
+    endDate: z.string().optional(),
+    current: z.boolean(),
+    description: z.string().min(1, 'Description is required'),
+    location: z.string().min(1, 'Location is required'),
+    type: z.enum(['volunteer', 'club', 'organization']),
+  })),
+  featuredSites: z.array(z.object({
+    id: z.string(),
+    title: z.string().min(1, 'Site title is required'),
+    description: z.string().min(1, 'Description is required'),
+    url: z.string().url('Please enter a valid URL'),
+    imageUrl: z.string().optional(),
+    category: z.enum(['portfolio', 'blog', 'project', 'social', 'other']),
+    featured: z.boolean(),
+  })),
   theme: z.string(),
 });
 
@@ -93,6 +115,8 @@ const steps = [
   { id: 'experience', title: 'Experience', icon: Briefcase },
   { id: 'education', title: 'Education', icon: GraduationCap },
   { id: 'certifications', title: 'Certifications', icon: Award },
+  { id: 'volunteer', title: 'Volunteer & Clubs', icon: User },
+  { id: 'sites', title: 'Featured Sites', icon: Briefcase },
   { id: 'theme', title: 'Theme', icon: Palette },
 ];
 
@@ -124,6 +148,8 @@ export default function PortfolioForm({ onDataChange, initialData }: PortfolioFo
       experience: [],
       education: [],
       certifications: [],
+      volunteerExperience: [],
+      featuredSites: [],
       theme: 'modern',
       ...initialData,
     },
@@ -167,6 +193,10 @@ export default function PortfolioForm({ onDataChange, initialData }: PortfolioFo
         return watchedData.education && watchedData.education.length > 0;
       case 'certifications':
         return true; // Certifications are optional
+      case 'volunteer':
+        return true; // Volunteer experience is optional
+      case 'sites':
+        return true; // Featured sites are optional
       case 'theme':
         return !!watchedData.theme;
       default:
@@ -207,6 +237,10 @@ export default function PortfolioForm({ onDataChange, initialData }: PortfolioFo
         return <EducationForm form={form} />;
       case 'certifications':
         return <CertificationsForm form={form} />;
+      case 'volunteer':
+        return <VolunteerExperienceForm form={form} />;
+      case 'sites':
+        return <FeaturedSitesForm form={form} />;
       case 'theme':
         return <ThemeSelector form={form} />;
       default:

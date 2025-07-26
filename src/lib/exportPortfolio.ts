@@ -4,7 +4,7 @@ import { PortfolioData } from '@/types/portfolio';
 
 // Generate HTML template for the portfolio
 export function generatePortfolioHTML(data: PortfolioData): string {
-  const { personalInfo, socialLinks, skills, projects, experience, education, certifications, theme } = data;
+  const { personalInfo, socialLinks, skills, projects, experience, education, certifications, volunteerExperience, featuredSites, theme } = data;
 
   const getThemeColors = () => {
     switch (theme) {
@@ -127,6 +127,9 @@ export function generatePortfolioHTML(data: PortfolioData): string {
                 <a href="#projects">Projects</a>
                 <a href="#experience">Experience</a>
                 <a href="#education">Education</a>
+                ${certifications && certifications.length > 0 ? '<a href="#certifications">Certifications</a>' : ''}
+                ${volunteerExperience && volunteerExperience.length > 0 ? '<a href="#volunteer">Volunteer</a>' : ''}
+                ${featuredSites && featuredSites.length > 0 ? '<a href="#sites">Featured Sites</a>' : ''}
                 <a href="#contact">Contact</a>
             </div>
             <div class="nav-toggle">
@@ -341,6 +344,62 @@ export function generatePortfolioHTML(data: PortfolioData): string {
                     </div>
                 </div>
                 ` : ''}
+            </div>
+        </div>
+    </section>
+    ` : ''}
+
+    <!-- Volunteer Experience Section -->
+    ${volunteerExperience && volunteerExperience.length > 0 ? `
+    <section id="volunteer" class="section">
+        <div class="container">
+            <h2 class="section-title">Volunteer & Community</h2>
+            <div class="volunteer-grid">
+                ${volunteerExperience.map(vol => `
+                <div class="volunteer-item">
+                    <div class="volunteer-header">
+                        <h3 class="volunteer-role">${vol.role}</h3>
+                        <div class="volunteer-type ${vol.type}">${vol.type.charAt(0).toUpperCase() + vol.type.slice(1)}</div>
+                    </div>
+                    <div class="volunteer-organization">${vol.organization}</div>
+                    <div class="volunteer-period">
+                        ${formatDate(vol.startDate)} - ${vol.current ? 'Present' : formatDate(vol.endDate || '')}
+                        <span class="volunteer-location">${vol.location}</span>
+                    </div>
+                    <div class="volunteer-description">${vol.description}</div>
+                </div>
+                `).join('')}
+            </div>
+        </div>
+    </section>
+    ` : ''}
+
+    <!-- Featured Sites Section -->
+    ${featuredSites && featuredSites.length > 0 ? `
+    <section id="sites" class="section">
+        <div class="container">
+            <h2 class="section-title">Featured Sites & Links</h2>
+            <div class="sites-grid">
+                ${featuredSites.map(site => `
+                <div class="site-item ${site.featured ? 'featured' : ''}">
+                    ${site.imageUrl ? `
+                    <div class="site-image">
+                        <img src="${site.imageUrl}" alt="${site.title}" loading="lazy">
+                    </div>
+                    ` : ''}
+                    <div class="site-content">
+                        <div class="site-header">
+                            <h3 class="site-title">${site.title}</h3>
+                            <div class="site-category ${site.category}">${site.category.charAt(0).toUpperCase() + site.category.slice(1)}</div>
+                            ${site.featured ? '<div class="featured-badge">★ Featured</div>' : ''}
+                        </div>
+                        <p class="site-description">${site.description}</p>
+                        <a href="${site.url}" target="_blank" rel="noopener noreferrer" class="site-link">
+                            Visit Site →
+                        </a>
+                    </div>
+                </div>
+                `).join('')}
             </div>
         </div>
     </section>
@@ -1188,6 +1247,221 @@ ${isDark ? `
   color: var(--primary);
 }
 
+/* Volunteer Experience Section */
+.volunteer-grid {
+  display: grid;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.volunteer-item {
+  background: var(--card-bg);
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.volunteer-item:hover {
+  transform: translateY(-3px);
+}
+
+.volunteer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.volunteer-role {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0;
+}
+
+.volunteer-type {
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.volunteer-type.volunteer {
+  background: #e3f2fd;
+  color: #1976d2;
+}
+
+.volunteer-type.club {
+  background: #f3e5f5;
+  color: #7b1fa2;
+}
+
+.volunteer-type.organization {
+  background: #e8f5e8;
+  color: #388e3c;
+}
+
+.volunteer-organization {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--accent);
+  margin-bottom: 0.5rem;
+}
+
+.volunteer-period {
+  font-size: 0.9rem;
+  color: var(--text);
+  opacity: 0.8;
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.volunteer-location {
+  font-style: italic;
+}
+
+.volunteer-description {
+  color: var(--text);
+  line-height: 1.6;
+}
+
+/* Featured Sites Section */
+.sites-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.site-item {
+  background: var(--card-bg);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.site-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.site-item.featured {
+  border: 2px solid var(--accent);
+  position: relative;
+}
+
+.site-image {
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+}
+
+.site-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.site-item:hover .site-image img {
+  transform: scale(1.05);
+}
+
+.site-content {
+  padding: 1.5rem;
+}
+
+.site-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.site-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0;
+}
+
+.site-category {
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.site-category.portfolio {
+  background: #e3f2fd;
+  color: #1976d2;
+}
+
+.site-category.blog {
+  background: #fff3e0;
+  color: #f57c00;
+}
+
+.site-category.project {
+  background: #e8f5e8;
+  color: #388e3c;
+}
+
+.site-category.social {
+  background: #fce4ec;
+  color: #c2185b;
+}
+
+.site-category.other {
+  background: #f3e5f5;
+  color: #7b1fa2;
+}
+
+.featured-badge {
+  background: linear-gradient(135deg, #ffd700, #ffb300);
+  color: #333;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.site-description {
+  color: var(--text);
+  line-height: 1.6;
+  margin-bottom: 1rem;
+  opacity: 0.9;
+}
+
+.site-link {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.site-link:hover {
+  color: var(--primary);
+}
+
 /* Contact Section */
 .contact-section {
   background: var(--gradient);
@@ -1581,7 +1855,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }, observerOptions);
 
     // Observe elements for animation
-    const animateElements = document.querySelectorAll('.skill-compact-item, .project-card, .timeline-item, .education-item, .certification-item');
+    const animateElements = document.querySelectorAll('.skill-compact-item, .project-card, .timeline-item, .education-item, .certification-item, .volunteer-item, .site-item');
     animateElements.forEach(el => {
         el.style.opacity = '0';
         el.style.transform = 'translateY(20px)';

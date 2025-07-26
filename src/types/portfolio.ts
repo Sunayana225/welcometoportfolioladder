@@ -67,6 +67,28 @@ export interface Certification {
   credentialUrl?: string;
 }
 
+export interface VolunteerExperience {
+  id: string;
+  organization: string;
+  role: string;
+  startDate: string;
+  endDate?: string;
+  current: boolean;
+  description: string;
+  location: string;
+  type: 'volunteer' | 'club' | 'organization';
+}
+
+export interface FeaturedSite {
+  id: string;
+  title: string;
+  description: string;
+  url: string;
+  imageUrl?: string;
+  category: 'portfolio' | 'blog' | 'project' | 'social' | 'other';
+  featured: boolean;
+}
+
 export interface PortfolioData {
   personalInfo: PersonalInfo;
   socialLinks: SocialLinks;
@@ -75,6 +97,8 @@ export interface PortfolioData {
   experience: Experience[];
   education: Education[];
   certifications: Certification[];
+  volunteerExperience: VolunteerExperience[];
+  featuredSites: FeaturedSite[];
   theme: string;
 }
 
