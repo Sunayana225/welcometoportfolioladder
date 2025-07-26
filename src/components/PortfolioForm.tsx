@@ -14,8 +14,6 @@ import ExperienceForm from './forms/ExperienceForm';
 import EducationForm from './forms/EducationForm';
 import CertificationsForm from './forms/CertificationsForm';
 import ThemeSelector from './ThemeSelector';
-import ResumeUpload from './ResumeUpload';
-import ApiKeyValidation from './ApiKeyValidation';
 
 const portfolioSchema = z.object({
   personalInfo: z.object({
@@ -26,6 +24,7 @@ const portfolioSchema = z.object({
     phone: z.string().min(1, 'Phone number is required'),
     location: z.string().min(1, 'Location is required'),
     profileImage: z.string().optional(),
+    formspreeId: z.string().optional(),
   }),
   socialLinks: z.object({
     github: z.string().url().optional().or(z.literal('')),
@@ -88,9 +87,6 @@ interface PortfolioFormProps {
 }
 
 const steps = [
-  // API key validation temporarily disabled for testing
-  // { id: 'apikey', title: 'API Setup', icon: User },
-  { id: 'resume', title: 'Quick Start', icon: User },
   { id: 'personal', title: 'Personal Info', icon: User },
   { id: 'skills', title: 'Skills', icon: Code },
   { id: 'projects', title: 'Projects', icon: Briefcase },
@@ -102,9 +98,6 @@ const steps = [
 
 export default function PortfolioForm({ onDataChange, initialData }: PortfolioFormProps) {
   const [currentStep, setCurrentStep] = useState(0);
-  // API key validation temporarily disabled for testing
-  const [huggingfaceApiKey, setHuggingfaceApiKey] = useState('test-key-disabled');
-  const [isApiKeyValidated, setIsApiKeyValidated] = useState(true); // Always validated for testing
   
   const form = useForm<PortfolioData>({
     resolver: zodResolver(portfolioSchema),
@@ -117,6 +110,7 @@ export default function PortfolioForm({ onDataChange, initialData }: PortfolioFo
         phone: '',
         location: '',
         profileImage: '',
+        formspreeId: '',
       },
       socialLinks: {
         github: '',
@@ -181,20 +175,9 @@ export default function PortfolioForm({ onDataChange, initialData }: PortfolioFo
   };
 
   const nextStep = () => {
-    // API key validation temporarily disabled for testing
-    // if (currentStep === 0 && !isApiKeyValidated) {
-    //   alert('Please validate your Hugging Face API key before proceeding.');
-    //   return;
-    // }
-
     if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1);
     }
-  };
-
-  const handleApiKeyValidated = (validatedKey: string) => {
-    setHuggingfaceApiKey(validatedKey);
-    setIsApiKeyValidated(true);
   };
 
   const onSubmit = (data: PortfolioData) => {
@@ -208,66 +191,16 @@ export default function PortfolioForm({ onDataChange, initialData }: PortfolioFo
     }
   };
 
-  const handleResumeDataExtracted = (resumeData: any) => {
-    // Update form with extracted resume data
-    form.reset({
-      personalInfo: {
-        fullName: resumeData.name || '',
-        title: resumeData.title || '',
-        bio: resumeData.about || '',
-        email: resumeData.email || '',
-        phone: resumeData.phone || '',
-        location: resumeData.location || '',
-        profileImage: '',
-      },
-      socialLinks: {
-        github: resumeData.github || '',
-        linkedin: resumeData.linkedin || '',
-        twitter: '',
-        website: resumeData.website || '',
-        instagram: '',
-      },
-      skills: resumeData.skills || [],
-      projects: resumeData.projects || [],
-      experience: resumeData.experience || [],
-      education: resumeData.education || [],
-      certifications: resumeData.certifications || [],
-      theme: resumeData.theme || 'pastel',
-    });
 
-    // Move to next step
-    setCurrentStep(1);
-  };
-
-  const handleSkipResume = () => {
-    // Skip resume upload and go directly to personal info form
-    nextStep();
-  };
 
   const renderStepContent = () => {
     switch (steps[currentStep].id) {
-      // API key validation step temporarily disabled for testing
-      // case 'apikey':
-      //   return (
-      //     <ApiKeyValidation
-      //       onValidationSuccess={handleApiKeyValidated}
-      //       initialApiKey={huggingfaceApiKey}
-      //     />
-      //   );
-      case 'resume':
-        return (
-          <ResumeUpload
-            onDataExtracted={handleResumeDataExtracted}
-            huggingfaceApiKey={huggingfaceApiKey}
-            onSkip={handleSkipResume}
-          />
-        );
       case 'personal':
         return <PersonalInfoForm form={form} />;
       case 'skills':
         return <SkillsForm form={form} />;
       case 'projects':
-        return <ProjectsForm form={form} huggingfaceApiKey={huggingfaceApiKey} isApiKeyValidated={isApiKeyValidated} />;
+        return <ProjectsForm form={form} />;
       case 'experience':
         return <ExperienceForm form={form} />;
       case 'education':
@@ -282,101 +215,168 @@ export default function PortfolioForm({ onDataChange, initialData }: PortfolioFo
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto">
-      {/* Step Indicator */}
-      <div className="mb-8">
-        <div className="flex items-center justify-between">
-          {steps.map((step, index) => {
-            const Icon = step.icon;
-            const isActive = index === currentStep;
-            const isCompleted = index < currentStep;
-            const isStepValid = isStepCompleted(step.id);
+    <div className="w-full max-w-6xl mx-auto">
+      {/* Step Indicator - Redesigned */}
+      <div className="mb-12">
+        {/* Progress Bar Background */}
+        <div className="relative mb-8">
+          <div className="absolute top-6 left-0 right-0 h-1 bg-white/20 rounded-full"></div>
+          <div
+            className="absolute top-6 left-0 h-1 bg-gradient-to-r from-green-400 to-blue-400 rounded-full transition-all duration-500"
+            style={{ width: `${(currentStep / (steps.length - 1)) * 100}%` }}
+          ></div>
 
-            return (
-              <div key={step.id} className="flex items-center">
-                <div className="relative group">
+          {/* Step Circles */}
+          <div className="relative flex justify-between">
+            {steps.map((step, index) => {
+              const Icon = step.icon;
+              const isActive = index === currentStep;
+              const isCompleted = index < currentStep;
+              const isStepValid = isStepCompleted(step.id);
+
+              return (
+                <div key={step.id} className="flex flex-col items-center group">
                   <motion.div
-                    className={`flex items-center justify-center w-12 h-12 rounded-full border-2 transition-all duration-300 ${
+                    className={`relative flex items-center justify-center w-12 h-12 rounded-full border-3 transition-all duration-300 cursor-pointer ${
                       isActive
-                        ? 'bg-white border-white shadow-lg'
+                        ? 'bg-white border-white shadow-xl scale-110'
                         : isCompleted && isStepValid
-                        ? 'bg-green-500 border-green-500 text-white shadow-md'
+                        ? 'bg-green-500 border-green-500 text-white shadow-lg'
                         : isCompleted
-                        ? 'bg-orange-400 border-orange-400 text-white shadow-md'
-                        : 'bg-white/20 border-white/30 text-white'
+                        ? 'bg-orange-400 border-orange-400 text-white shadow-lg'
+                        : 'bg-white/10 border-white/30 text-white hover:bg-white/20'
                     }`}
-                    whileHover={{ scale: 1.05 }}
+                    whileHover={{ scale: isActive ? 1.1 : 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     style={isActive ? { color: '#6B4F41' } : {}}
+                    onClick={() => setCurrentStep(index)}
                   >
                     <Icon size={20} />
+
+                    {/* Active Step Glow */}
+                    {isActive && (
+                      <div className="absolute inset-0 rounded-full bg-white/30 animate-ping"></div>
+                    )}
                   </motion.div>
 
-                  {/* Tooltip */}
-                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1 bg-gray-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
-                    {step.title}
-                    {isCompleted && isStepValid && ' ✓'}
-                    {isCompleted && !isStepValid && ' ⚠️'}
+                  {/* Step Label */}
+                  <div className="mt-3 text-center">
+                    <p className={`text-xs font-medium transition-colors duration-300 ${
+                      isActive ? 'text-white' : 'text-white/60'
+                    }`}>
+                      {step.title}
+                    </p>
+                    {isCompleted && isStepValid && (
+                      <div className="text-green-400 text-xs mt-1">✓ Complete</div>
+                    )}
+                    {isCompleted && !isStepValid && (
+                      <div className="text-orange-400 text-xs mt-1">⚠️ Incomplete</div>
+                    )}
                   </div>
                 </div>
-                {index < steps.length - 1 && (
-                  <div className={`w-16 h-0.5 mx-2 transition-all duration-300 ${
-                    isCompleted && isStepValid ? 'bg-green-400' : isCompleted ? 'bg-orange-300' : 'bg-white/30'
-                  }`} />
-                )}
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
-        <div className="mt-4 text-center">
-          <h2 className="text-2xl font-semibold text-white mb-2">
+
+        {/* Current Step Info */}
+        <motion.div
+          key={currentStep}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center bg-white/10 backdrop-blur-sm rounded-2xl p-6"
+        >
+          <h2 className="text-3xl font-bold text-white mb-2">
             {steps[currentStep].title}
           </h2>
-          <p className="text-white/80">
-            Step {currentStep + 1} of {steps.length}
+          <p className="text-white/80 text-lg">
+            Step {currentStep + 1} of {steps.length} • {steps[currentStep].description || 'Complete this section to continue'}
           </p>
-        </div>
+        </motion.div>
       </div>
 
       {/* Form Content */}
       <motion.div
         key={currentStep}
-        initial={{ opacity: 0, x: 20 }}
-        animate={{ opacity: 1, x: 0 }}
-        exit={{ opacity: 0, x: -20 }}
-        transition={{ duration: 0.3 }}
-        className="glass-effect rounded-2xl p-8 mb-8"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -20 }}
+        transition={{ duration: 0.4, ease: "easeOut" }}
+        className="relative"
       >
-        {renderStepContent()}
+        {/* Content Card */}
+        <div className="bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl overflow-hidden">
+          {/* Card Header */}
+          <div className="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 p-6">
+            <div className="flex items-center space-x-3">
+              <div className="p-2 bg-white/20 rounded-xl">
+                {React.createElement(steps[currentStep].icon, { size: 24, className: "text-white" })}
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-white">{steps[currentStep].title}</h3>
+                <p className="text-white/80 text-sm">Fill in your information below</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Card Content */}
+          <div className="p-8">
+            {renderStepContent()}
+          </div>
+        </div>
       </motion.div>
 
       {/* Navigation */}
-      <div className="flex justify-between">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="flex justify-between items-center mt-8 bg-white/10 backdrop-blur-sm rounded-2xl p-6"
+      >
         <motion.button
           type="button"
           onClick={prevStep}
           disabled={currentStep === 0}
-          className={`px-6 py-3 rounded-lg font-medium transition-all duration-300 ${
-            currentStep === 0
-              ? 'bg-white/20 text-white/50 cursor-not-allowed'
-              : 'bg-white/30 text-white hover:bg-white/40 hover:scale-105'
-          }`}
-          whileHover={{ scale: currentStep === 0 ? 1 : 1.05 }}
-          whileTap={{ scale: currentStep === 0 ? 1 : 0.95 }}
+          className="group flex items-center space-x-2 px-6 py-3 bg-white/20 text-white rounded-xl hover:bg-white/30 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
+          whileHover={{ scale: currentStep === 0 ? 1 : 1.05, x: currentStep === 0 ? 0 : -2 }}
+          whileTap={{ scale: currentStep === 0 ? 1 : 0.98 }}
         >
-          Previous
+          <span className="group-hover:-translate-x-1 transition-transform">←</span>
+          <span>Previous</span>
         </motion.button>
+
+        {/* Progress Indicator */}
+        <div className="flex items-center space-x-3">
+          <div className="text-white/60 text-sm font-medium">
+            {currentStep + 1} of {steps.length}
+          </div>
+          <div className="flex space-x-1">
+            {steps.map((_, index) => (
+              <div
+                key={index}
+                className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                  index === currentStep
+                    ? 'bg-white scale-125'
+                    : index < currentStep
+                    ? 'bg-green-400'
+                    : 'bg-white/30'
+                }`}
+              />
+            ))}
+          </div>
+        </div>
 
         <motion.button
           type="button"
           onClick={currentStep === steps.length - 1 ? handleSubmit(onSubmit) : nextStep}
-          className="px-6 py-3 bg-white text-purple-600 rounded-lg font-medium hover:bg-white/90 hover:scale-105 transition-all duration-300"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
+          className="group flex items-center space-x-2 px-6 py-3 bg-white text-gray-800 rounded-xl hover:bg-white/90 transition-all duration-300 font-medium"
+          whileHover={{ scale: 1.05, x: 2 }}
+          whileTap={{ scale: 0.98 }}
         >
-          {currentStep === steps.length - 1 ? 'Generate Portfolio' : 'Next'}
+          <span>{currentStep === steps.length - 1 ? 'Generate Portfolio' : 'Next'}</span>
+          <span className="group-hover:translate-x-1 transition-transform">→</span>
         </motion.button>
-      </div>
+      </motion.div>
     </div>
   );
 };

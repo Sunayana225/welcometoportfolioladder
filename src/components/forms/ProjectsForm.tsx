@@ -5,17 +5,12 @@ import { UseFormReturn } from 'react-hook-form';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, X, ExternalLink, Github, Star, Image as ImageIcon } from 'lucide-react';
 import { PortfolioData, Project } from '@/types/portfolio';
-import GitHubIntegration from '@/components/GitHubIntegration';
-import GitHubDemo from '@/components/GitHubDemo';
-import { ProjectSuggestion } from '@/lib/githubService';
 
 interface ProjectsFormProps {
   form: UseFormReturn<PortfolioData>;
-  huggingfaceApiKey?: string;
-  isApiKeyValidated?: boolean;
 }
 
-export default function ProjectsForm({ form, huggingfaceApiKey = '', isApiKeyValidated = false }: ProjectsFormProps) {
+export default function ProjectsForm({ form }: ProjectsFormProps) {
   const { watch, setValue } = form;
   const [showAddForm, setShowAddForm] = useState(false);
   const [newProject, setNewProject] = useState({
@@ -78,20 +73,7 @@ export default function ProjectsForm({ form, huggingfaceApiKey = '', isApiKeyVal
     }
   };
 
-  const handleProjectsGenerated = (suggestions: ProjectSuggestion[]) => {
-    const newProjects: Project[] = suggestions.map(suggestion => ({
-      id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
-      title: suggestion.title,
-      description: suggestion.description,
-      technologies: suggestion.technologies,
-      liveUrl: suggestion.liveUrl,
-      githubUrl: suggestion.githubUrl,
-      imageUrl: undefined,
-      featured: suggestion.featured,
-    }));
 
-    setValue('projects', [...projects, ...newProjects]);
-  };
 
   return (
     <div className="space-y-8">
@@ -104,15 +86,7 @@ export default function ProjectsForm({ form, huggingfaceApiKey = '', isApiKeyVal
         </p>
       </div>
 
-      {/* GitHub Demo */}
-      <GitHubDemo />
 
-      {/* GitHub Integration */}
-      <GitHubIntegration
-        onProjectsGenerated={handleProjectsGenerated}
-        huggingfaceApiKey={huggingfaceApiKey}
-        isApiKeyValidated={isApiKeyValidated}
-      />
 
       {/* Add Project Button */}
       {!showAddForm && (

@@ -6,6 +6,7 @@ export interface PersonalInfo {
   phone: string;
   location: string;
   profileImage?: string;
+  formspreeId?: string;
 }
 
 export interface SocialLinks {

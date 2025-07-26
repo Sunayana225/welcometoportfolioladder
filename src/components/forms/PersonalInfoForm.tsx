@@ -289,6 +289,48 @@ export default function PersonalInfoForm({ form }: PersonalInfoFormProps) {
         )}
       </motion.div>
 
+      {/* Formspree Contact Form Setup */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.65 }}
+        className="bg-blue-50 border border-blue-200 rounded-xl p-6"
+      >
+        <h4 className="text-lg font-medium text-blue-800 mb-3 flex items-center">
+          <Mail className="inline w-5 h-5 mr-2" />
+          Contact Form Setup (Optional)
+        </h4>
+        <p className="text-sm text-blue-700 mb-4">
+          Add your Formspree Form ID to make your contact form work immediately after export.
+          <a href="https://formspree.io" target="_blank" rel="noopener noreferrer" className="underline hover:text-blue-800">
+            Get your free Formspree ID here
+          </a>
+        </p>
+
+        <div>
+          <label className="block text-sm font-medium text-blue-800 mb-2">
+            Formspree Form ID
+          </label>
+          <input
+            {...register('personalInfo.formspreeId')}
+            type="text"
+            className="w-full px-4 py-3 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 form-input bg-white"
+            placeholder="xpzgkqyw (example)"
+          />
+          <p className="text-xs text-blue-600 mt-2">
+            💡 <strong>How to get your Formspree ID:</strong><br/>
+            1. Sign up at formspree.io (free)<br/>
+            2. Create a new form<br/>
+            3. Copy the ID from your form URL: formspree.io/f/<strong>YOUR-ID-HERE</strong>
+          </p>
+          {errors.personalInfo?.formspreeId && (
+            <p className="mt-1 text-sm text-red-600">
+              {errors.personalInfo.formspreeId.message}
+            </p>
+          )}
+        </div>
+      </motion.div>
+
       {/* Social Links */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}

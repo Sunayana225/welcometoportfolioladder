@@ -108,7 +108,7 @@ export default function PortfolioPreview({ data }: PortfolioPreviewProps) {
         }}
       >
         <div className="absolute inset-0 bg-black/10" />
-        <div className="relative z-10 px-8 py-16 text-center text-white">
+        <div className="relative z-10 px-8 py-16 text-center" style={{ color: colors.text }}>
           {personalInfo.profileImage && (
             <motion.div
               initial={{ scale: 0 }}
@@ -129,6 +129,10 @@ export default function PortfolioPreview({ data }: PortfolioPreviewProps) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
             className="text-4xl md:text-5xl font-bold mb-4"
+            style={{
+              color: colors.text,
+              textShadow: '2px 2px 4px rgba(255,255,255,0.8)'
+            }}
           >
             {personalInfo.fullName}
           </motion.h1>
@@ -137,7 +141,12 @@ export default function PortfolioPreview({ data }: PortfolioPreviewProps) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="text-xl md:text-2xl text-white/90 mb-6"
+            className="text-xl md:text-2xl mb-6"
+            style={{
+              color: colors.text,
+              opacity: 0.9,
+              textShadow: '1px 1px 2px rgba(255,255,255,0.7)'
+            }}
           >
             {personalInfo.title}
           </motion.h2>
@@ -146,7 +155,12 @@ export default function PortfolioPreview({ data }: PortfolioPreviewProps) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
-            className="text-lg text-white/80 max-w-3xl mx-auto leading-relaxed"
+            className="text-lg max-w-3xl mx-auto leading-relaxed"
+            style={{
+              color: colors.text,
+              opacity: 0.8,
+              textShadow: '1px 1px 2px rgba(255,255,255,0.6)'
+            }}
           >
             {personalInfo.bio}
           </motion.p>
@@ -155,7 +169,8 @@ export default function PortfolioPreview({ data }: PortfolioPreviewProps) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6 }}
-            className="flex flex-wrap justify-center gap-6 mt-8 text-white/90"
+            className="flex flex-wrap justify-center gap-6 mt-8"
+            style={{ color: colors.text, opacity: 0.9 }}
           >
             <div className="flex items-center">
               <Mail className="w-5 h-5 mr-2" />
@@ -183,9 +198,13 @@ export default function PortfolioPreview({ data }: PortfolioPreviewProps) {
                 href={socialLinks.github}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-3 bg-white/20 rounded-full hover:bg-white/30 transition-colors duration-200"
+                className="p-3 rounded-full hover:opacity-80 transition-colors duration-200"
+                style={{
+                  backgroundColor: `${colors.primary}20`,
+                  border: `2px solid ${colors.primary}40`
+                }}
               >
-                <Github className="w-5 h-5" />
+                <Github className="w-5 h-5" style={{ color: colors.primary }} />
               </a>
             )}
             {socialLinks.linkedin && (
@@ -193,9 +212,13 @@ export default function PortfolioPreview({ data }: PortfolioPreviewProps) {
                 href={socialLinks.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-3 bg-white/20 rounded-full hover:bg-white/30 transition-colors duration-200"
+                className="p-3 rounded-full hover:opacity-80 transition-colors duration-200"
+                style={{
+                  backgroundColor: `${colors.primary}20`,
+                  border: `2px solid ${colors.primary}40`
+                }}
               >
-                <ExternalLink className="w-5 h-5" />
+                <ExternalLink className="w-5 h-5" style={{ color: colors.primary }} />
               </a>
             )}
             {socialLinks.website && (
@@ -203,9 +226,13 @@ export default function PortfolioPreview({ data }: PortfolioPreviewProps) {
                 href={socialLinks.website}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-3 bg-white/20 rounded-full hover:bg-white/30 transition-colors duration-200"
+                className="p-3 rounded-full hover:opacity-80 transition-colors duration-200"
+                style={{
+                  backgroundColor: `${colors.primary}20`,
+                  border: `2px solid ${colors.primary}40`
+                }}
               >
-                <ExternalLink className="w-5 h-5" />
+                <ExternalLink className="w-5 h-5" style={{ color: colors.primary }} />
               </a>
             )}
           </motion.div>
@@ -223,26 +250,30 @@ export default function PortfolioPreview({ data }: PortfolioPreviewProps) {
             <h3 className="text-2xl font-bold mb-6" style={{ color: colors.primary }}>
               Skills & Expertise
             </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
               {skills.map((skill, index) => (
                 <motion.div
                   key={skill.id}
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.9 + index * 0.1 }}
-                  className="space-y-2"
+                  className="bg-white/50 dark:bg-gray-800/50 p-3 rounded-lg border-l-4 hover:translate-x-1 transition-transform duration-300"
+                  style={{ borderLeftColor: colors.primary }}
                 >
-                  <div className="flex justify-between items-center">
-                    <span className="font-medium">{skill.name}</span>
-                    <span className="text-sm" style={{ color: colors.secondary }}>
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="font-medium text-sm">{skill.name}</span>
+                    <span
+                      className="text-xs px-2 py-1 rounded-full text-white font-semibold"
+                      style={{ backgroundColor: colors.primary }}
+                    >
                       {skill.level}%
                     </span>
                   </div>
-                  <div className={`w-full h-2 rounded-full ${isDark ? 'bg-gray-700' : 'bg-gray-200'}`}>
+                  <div className={`w-full h-1 rounded-full ${isDark ? 'bg-gray-700' : 'bg-gray-200'}`}>
                     <motion.div
-                      className="h-2 rounded-full"
-                      style={{ 
-                        background: `linear-gradient(90deg, ${colors.primary} 0%, ${colors.accent} 100%)` 
+                      className="h-1 rounded-full"
+                      style={{
+                        background: `linear-gradient(90deg, ${colors.primary} 0%, ${colors.accent} 100%)`
                       }}
                       initial={{ width: 0 }}
                       animate={{ width: `${skill.level}%` }}
@@ -293,7 +324,7 @@ export default function PortfolioPreview({ data }: PortfolioPreviewProps) {
                     )}
                   </div>
                   
-                  <p className={`text-sm mb-4 ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+                  <p className="text-sm mb-4" style={{ color: colors.text, opacity: 0.8 }}>
                     {project.description}
                   </p>
                   
@@ -434,10 +465,10 @@ export default function PortfolioPreview({ data }: PortfolioPreviewProps) {
                         <GraduationCap className="w-5 h-5" style={{ color: colors.accent }} />
                         <h4 className="font-semibold">{edu.degree}</h4>
                       </div>
-                      <h5 className="font-medium mb-2" style={{ color: colors.secondary }}>
+                      <h5 className="font-medium mb-2" style={{ color: colors.primary, opacity: 0.8 }}>
                         {edu.institution}
                       </h5>
-                      <div className={`text-sm ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+                      <div className="text-sm" style={{ color: colors.text, opacity: 0.7 }}>
                         {formatDate(edu.startDate)} - {edu.current ? 'Present' : formatDate(edu.endDate || '')}
                         {edu.gpa && <span className="ml-2">• GPA: {edu.gpa}</span>}
                       </div>

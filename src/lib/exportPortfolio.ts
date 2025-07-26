@@ -173,20 +173,64 @@ export function generatePortfolioHTML(data: PortfolioData): string {
         </div>
     </section>
 
+    <!-- About Section -->
+    <section id="about" class="section about-section">
+        <div class="container">
+            <h2 class="section-title">About Me</h2>
+            <div class="about-content">
+                <div class="about-text">
+                    <p class="about-description">${personalInfo.bio}</p>
+
+                    <div class="about-highlights">
+                        <div class="highlight-item">
+                            <i class="fas fa-user"></i>
+                            <div>
+                                <h4>Professional Title</h4>
+                                <p>${personalInfo.title}</p>
+                            </div>
+                        </div>
+                        <div class="highlight-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <div>
+                                <h4>Location</h4>
+                                <p>${personalInfo.location}</p>
+                            </div>
+                        </div>
+                        <div class="highlight-item">
+                            <i class="fas fa-envelope"></i>
+                            <div>
+                                <h4>Contact</h4>
+                                <p><a href="mailto:${personalInfo.email}">${personalInfo.email}</a></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                ${personalInfo.profileImage ? `
+                <div class="about-image">
+                    <img src="${personalInfo.profileImage}" alt="${personalInfo.fullName}">
+                </div>
+                ` : ''}
+            </div>
+        </div>
+    </section>
+
     <!-- Skills Section -->
     ${skills.length > 0 ? `
     <section id="skills" class="section">
         <div class="container">
             <h2 class="section-title">Skills & Expertise</h2>
-            <div class="skills-grid">
+
+            <!-- Compact Skills Layout -->
+            <div class="skills-compact">
                 ${skills.map(skill => `
-                <div class="skill-item">
-                    <div class="skill-header">
-                        <span class="skill-name">${skill.name}</span>
-                        <span class="skill-level">${skill.level}%</span>
+                <div class="skill-compact-item">
+                    <div class="skill-compact-header">
+                        <span class="skill-compact-name">${skill.name}</span>
+                        <span class="skill-compact-level">${skill.level}%</span>
                     </div>
-                    <div class="skill-bar">
-                        <div class="skill-progress" style="width: ${skill.level}%"></div>
+                    <div class="skill-compact-bar">
+                        <div class="skill-compact-progress" style="width: ${skill.level}%"></div>
                     </div>
                 </div>
                 `).join('')}
@@ -334,23 +378,33 @@ export function generatePortfolioHTML(data: PortfolioData): string {
                     </div>
                 </div>
                 
-                <form class="contact-form" id="contactForm">
+                <!-- ============================================= -->
+                <!-- CONTACT FORM ${personalInfo.formspreeId ? 'READY TO USE' : 'SETUP REQUIRED'} -->
+                <!-- ============================================= -->
+                ${personalInfo.formspreeId ? `
+                <!-- ✅ Contact form is ready to use with your Formspree ID: ${personalInfo.formspreeId} -->
+                ` : `
+                <!-- ⚠️ SETUP REQUIRED: -->
+                <!-- 1. Sign up at https://formspree.io (FREE) -->
+                <!-- 2. Create a new form and get your Form ID -->
+                <!-- 3. Replace 'your-form-id' below with your actual Formspree ID -->
+                <!-- Example: https://formspree.io/f/xpzgkqyw -->
+                `}
+                <!-- ============================================= -->
+                <form class="contact-form" action="https://formspree.io/f/${personalInfo.formspreeId || 'your-form-id'}" method="POST">
                     <div class="form-group">
-                        <input type="text" id="name" name="name" placeholder="Your Name" required>
+                        <input type="text" name="name" placeholder="Your Name" required>
                     </div>
                     <div class="form-group">
-                        <input type="email" id="email" name="email" placeholder="Your Email" required>
+                        <input type="email" name="email" placeholder="Your Email" required>
                     </div>
                     <div class="form-group">
-                        <input type="text" id="subject" name="subject" placeholder="Subject" required>
+                        <input type="text" name="subject" placeholder="Subject" required>
                     </div>
                     <div class="form-group">
-                        <textarea id="message" name="message" placeholder="Your Message" rows="5" required></textarea>
+                        <textarea name="message" placeholder="Your Message" rows="5" required></textarea>
                     </div>
-                    <button type="submit" class="submit-btn">
-                        <span class="btn-text">Send Message</span>
-                        <span class="btn-loading" style="display: none;">Sending...</span>
-                    </button>
+                    <button type="submit" class="submit-btn">Send Message</button>
                 </form>
             </div>
         </div>
@@ -385,6 +439,8 @@ export function generatePortfolioCSS(data: PortfolioData): string {
           cardBackground: '#f8fafc',
           divider: '#e2e8f0',
           hover: '#edf2f7',
+          heroText: '#2d3748',
+          contactText: '#2d3748',
         };
       case 'creative':
         return {
@@ -396,6 +452,8 @@ export function generatePortfolioCSS(data: PortfolioData): string {
           cardBackground: '#ffffff',
           divider: '#dee2e6',
           hover: '#e9ecef',
+          heroText: '#2c3e50',
+          contactText: '#2c3e50',
         };
       case 'professional':
         return {
@@ -407,6 +465,8 @@ export function generatePortfolioCSS(data: PortfolioData): string {
           cardBackground: '#f8f9fa',
           divider: '#dee2e6',
           hover: '#e9ecef',
+          heroText: '#2c3e50',
+          contactText: '#2c3e50',
         };
       case 'dark':
         return {
@@ -418,6 +478,8 @@ export function generatePortfolioCSS(data: PortfolioData): string {
           cardBackground: '#1e1e1e',
           divider: '#333333',
           hover: '#2a2a2a',
+          heroText: '#ffffff',
+          contactText: '#ffffff',
         };
       case 'pastel':
         return {
@@ -428,6 +490,8 @@ export function generatePortfolioCSS(data: PortfolioData): string {
           text: '#6B4F41',
           cardBackground: '#F5EDE3',
           divider: '#E8D5C4',
+          heroText: '#6B4F41',
+          contactText: '#6B4F41',
           hover: '#F2D3C2',
           heartGradient: 'linear-gradient(135deg, #FDF6EE 0%, #E8D5C4 100%)',
         };
@@ -448,10 +512,19 @@ export function generatePortfolioCSS(data: PortfolioData): string {
   const colors = getThemeColors();
   const isDark = theme === 'dark';
 
+  // Helper function to convert hex to RGB
+  const hexToRgb = (hex: string) => {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ?
+      `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` :
+      '0, 0, 0';
+  };
+
   return `/* Portfolio Styles - Generated by Portfolio Maker */
 
 :root {
   --primary: ${colors.primary};
+  --primary-rgb: ${hexToRgb(colors.primary)};
   --secondary: ${colors.secondary};
   --accent: ${colors.accent};
   --background: ${colors.background};
@@ -459,6 +532,8 @@ export function generatePortfolioCSS(data: PortfolioData): string {
   --card-bg: ${colors.cardBackground};
   --divider: ${colors.divider};
   --hover: ${colors.hover};
+  --hero-text: ${colors.heroText};
+  --contact-text: ${colors.contactText};
   --gradient: ${colors.heartGradient || `linear-gradient(135deg, ${colors.primary} 0%, ${colors.secondary} 100%)`};
 }
 
@@ -554,7 +629,7 @@ ${isDark ? `
   align-items: center;
   justify-content: center;
   text-align: center;
-  color: white;
+  color: var(--hero-text);
   position: relative;
   overflow: hidden;
 }
@@ -597,6 +672,7 @@ ${isDark ? `
   font-weight: 700;
   margin-bottom: 1rem;
   animation: fadeInUp 1s ease;
+  text-shadow: 2px 2px 4px rgba(255,255,255,0.8);
 }
 
 .hero-subtitle {
@@ -605,6 +681,7 @@ ${isDark ? `
   margin-bottom: 2rem;
   opacity: 0.9;
   animation: fadeInUp 1s ease 0.2s both;
+  text-shadow: 1px 1px 2px rgba(255,255,255,0.7);
 }
 
 .hero-description {
@@ -615,6 +692,7 @@ ${isDark ? `
   margin-left: auto;
   margin-right: auto;
   animation: fadeInUp 1s ease 0.4s both;
+  text-shadow: 1px 1px 2px rgba(255,255,255,0.6);
 }
 
 .hero-contact {
@@ -650,17 +728,19 @@ ${isDark ? `
   justify-content: center;
   width: 50px;
   height: 50px;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(var(--primary-rgb), 0.2);
+  border: 2px solid rgba(var(--primary-rgb), 0.4);
   border-radius: 50%;
-  color: white;
+  color: var(--primary);
   text-decoration: none;
   font-size: 1.2rem;
   transition: all 0.3s ease;
 }
 
 .hero-social a:hover {
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(var(--primary-rgb), 0.3);
   transform: translateY(-3px);
+  opacity: 0.8;
 }
 
 /* Sections */
@@ -693,55 +773,179 @@ ${isDark ? `
   border-radius: 2px;
 }
 
-/* Skills */
-.skills-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
-}
-
-.skill-item {
+/* About Section */
+.about-section {
   background: var(--card-bg);
-  padding: 1.5rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease;
 }
 
-.skill-item:hover {
-  transform: translateY(-5px);
-}
-
-.skill-header {
-  display: flex;
-  justify-content: space-between;
+.about-content {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 4rem;
   align-items: center;
-  margin-bottom: 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-.skill-name {
-  font-weight: 600;
+.about-text {
   color: var(--text);
 }
 
-.skill-level {
-  font-weight: 500;
-  color: var(--secondary);
+.about-description {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  margin-bottom: 2rem;
+  color: var(--text);
 }
 
-.skill-bar {
+.about-highlights {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.highlight-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: var(--bg);
+  border-radius: 12px;
+  border-left: 4px solid var(--primary);
+  transition: all 0.3s ease;
+}
+
+.highlight-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.highlight-item i {
+  color: var(--primary);
+  font-size: 1.2rem;
+  margin-top: 0.2rem;
+  min-width: 20px;
+}
+
+.highlight-item h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--primary);
+}
+
+.highlight-item p {
+  margin: 0;
+  color: var(--text);
+  font-size: 0.95rem;
+}
+
+.highlight-item a {
+  color: var(--primary);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.highlight-item a:hover {
+  color: var(--accent);
+}
+
+.about-image {
+  text-align: center;
+}
+
+.about-image img {
   width: 100%;
-  height: 8px;
-  background: var(--divider);
-  border-radius: 4px;
-  overflow: hidden;
+  max-width: 300px;
+  height: auto;
+  border-radius: 20px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
 }
 
-.skill-progress {
+.about-image img:hover {
+  transform: scale(1.05);
+}
+
+/* Skills - Compact Layout */
+.skills-compact {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+  max-width: 100%;
+}
+
+/* Ensure skill bars are visible on load */
+.skill-compact-progress[style*="width"] {
+  opacity: 1 !important;
+  display: block !important;
+}
+
+/* Fallback for skill bars without animation */
+.skill-compact-progress {
+  background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%) !important;
+}
+
+/* Force visibility for skill progress bars */
+.skills-compact .skill-compact-progress {
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.skill-compact-item {
+  background: var(--card-bg);
+  padding: 1rem 1.25rem;
+  border-radius: 8px;
+  border-left: 4px solid var(--primary);
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.skill-compact-item:hover {
+  transform: translateX(5px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.skill-compact-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.skill-compact-name {
+  font-weight: 600;
+  color: var(--text);
+  font-size: 0.9rem;
+}
+
+.skill-compact-level {
+  font-weight: 600;
+  background: var(--primary);
+  color: #ffffff;
+  padding: 0.1rem 0.4rem;
+  border-radius: 10px;
+  font-size: 0.7rem;
+}
+
+.skill-compact-bar {
+  width: 100%;
+  height: 6px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 3px;
+  overflow: hidden;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.skill-compact-progress {
   height: 100%;
-  background: var(--gradient);
-  border-radius: 4px;
+  background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);
+  border-radius: 3px;
   transition: width 1s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  min-width: 2%;
+  display: block;
+  opacity: 1;
 }
 
 /* Projects */
@@ -789,7 +993,8 @@ ${isDark ? `
 }
 
 .project-description {
-  color: var(--secondary);
+  color: var(--text);
+  opacity: 0.8;
   margin-bottom: 1rem;
   line-height: 1.6;
 }
@@ -883,7 +1088,7 @@ ${isDark ? `
 
 .current-badge {
   background: var(--accent);
-  color: white;
+  color: #ffffff;
   padding: 0.25rem 0.75rem;
   border-radius: 20px;
   font-size: 0.7rem;
@@ -893,7 +1098,8 @@ ${isDark ? `
 .timeline-company {
   font-size: 1.1rem;
   font-weight: 500;
-  color: var(--secondary);
+  color: var(--primary);
+  opacity: 0.8;
   margin-bottom: 1rem;
 }
 
@@ -902,7 +1108,8 @@ ${isDark ? `
   gap: 1rem;
   margin-bottom: 1rem;
   font-size: 0.9rem;
-  color: var(--secondary);
+  color: var(--text);
+  opacity: 0.7;
   flex-wrap: wrap;
 }
 
@@ -949,14 +1156,16 @@ ${isDark ? `
 .certification-issuer {
   font-size: 1rem;
   font-weight: 500;
-  color: var(--secondary);
+  color: var(--primary);
+  opacity: 0.8;
   margin-bottom: 0.5rem;
 }
 
 .education-meta,
 .certification-meta {
   font-size: 0.9rem;
-  color: var(--secondary);
+  color: var(--text);
+  opacity: 0.7;
   margin-bottom: 1rem;
 }
 
@@ -981,7 +1190,7 @@ ${isDark ? `
 /* Contact Section */
 .contact-section {
   background: var(--gradient);
-  color: white;
+  color: var(--contact-text);
 }
 
 .contact-content {
@@ -1019,7 +1228,7 @@ ${isDark ? `
 }
 
 .contact-detail a {
-  color: white;
+  color: var(--contact-text);
   text-decoration: none;
   transition: opacity 0.3s ease;
 }
@@ -1039,16 +1248,18 @@ ${isDark ? `
   justify-content: center;
   width: 40px;
   height: 40px;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(var(--primary-rgb), 0.2);
+  border: 2px solid rgba(var(--primary-rgb), 0.4);
   border-radius: 50%;
-  color: white;
+  color: var(--primary);
   text-decoration: none;
   transition: all 0.3s ease;
 }
 
 .contact-social a:hover {
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(var(--primary-rgb), 0.3);
   transform: translateY(-3px);
+  opacity: 0.8;
 }
 
 /* Contact Form */
@@ -1171,7 +1382,21 @@ ${isDark ? `
     font-size: 2rem;
   }
 
-  .skills-grid,
+  .about-content {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    text-align: center;
+  }
+
+  .about-image {
+    order: -1;
+  }
+
+  .about-image img {
+    max-width: 250px;
+  }
+
+  .skills-compact,
   .projects-grid {
     grid-template-columns: 1fr;
   }
@@ -1298,22 +1523,30 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Animate skill bars on scroll
-    const skillBars = document.querySelectorAll('.skill-progress');
+    // Ensure skill bars are visible and properly sized
+    const skillBars = document.querySelectorAll('.skill-compact-progress');
+
+    // Simple animation that ensures bars are always visible
     const animateSkillBars = () => {
-        skillBars.forEach(bar => {
-            const rect = bar.getBoundingClientRect();
-            if (rect.top < window.innerHeight && rect.bottom > 0) {
-                const width = bar.style.width;
+        skillBars.forEach((bar, index) => {
+            // Get the width from the inline style (set in HTML)
+            const targetWidth = bar.style.width;
+            if (targetWidth && targetWidth !== '0%') {
+                // Start from 0 and animate to target width
                 bar.style.width = '0%';
                 setTimeout(() => {
-                    bar.style.width = width;
-                }, 100);
+                    bar.style.width = targetWidth;
+                }, index * 100 + 200);
             }
         });
     };
 
-    // Trigger skill bar animation on scroll
+    // Trigger skill bar animation on page load
+    setTimeout(() => {
+        animateSkillBars();
+    }, 500);
+
+    // Also trigger on scroll if not already animated
     let skillsAnimated = false;
     window.addEventListener('scroll', function() {
         if (!skillsAnimated) {
@@ -1328,65 +1561,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Contact form handling
-    const contactForm = document.getElementById('contactForm');
-    if (contactForm) {
-        contactForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
-
-            const submitBtn = this.querySelector('.submit-btn');
-            const btnText = submitBtn.querySelector('.btn-text');
-            const btnLoading = submitBtn.querySelector('.btn-loading');
-
-            // Get form data
-            const formData = new FormData(this);
-            const data = {
-                name: formData.get('name'),
-                email: formData.get('email'),
-                subject: formData.get('subject'),
-                message: formData.get('message')
-            };
-
-            // Validate form
-            if (!data.name || !data.email || !data.subject || !data.message) {
-                alert('Please fill in all fields.');
-                return;
-            }
-
-            // Show loading state
-            submitBtn.disabled = true;
-            btnText.style.display = 'none';
-            btnLoading.style.display = 'inline';
-
-            try {
-                // Replace with your actual contact form endpoint
-                const response = await fetch('/php-backend/contact.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(data)
-                });
-
-                const result = await response.json();
-
-                if (response.ok && result.success) {
-                    alert('Thank you for your message! I will get back to you soon.');
-                    this.reset();
-                } else {
-                    throw new Error(result.error || 'Failed to send message');
-                }
-            } catch (error) {
-                console.error('Error sending message:', error);
-                alert('Sorry, there was an error sending your message. Please try again or contact me directly.');
-            } finally {
-                // Reset button state
-                submitBtn.disabled = false;
-                btnText.style.display = 'inline';
-                btnLoading.style.display = 'none';
-            }
-        });
-    }
+    // Contact form is now handled by Formspree - no JavaScript needed
+    // The form will submit directly to Formspree and redirect to a thank you page
 
     // Add fade-in animation to elements on scroll
     const observerOptions = {
@@ -1404,7 +1580,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }, observerOptions);
 
     // Observe elements for animation
-    const animateElements = document.querySelectorAll('.skill-item, .project-card, .timeline-item, .education-item, .certification-item');
+    const animateElements = document.querySelectorAll('.skill-compact-item, .project-card, .timeline-item, .education-item, .certification-item');
     animateElements.forEach(el => {
         el.style.opacity = '0';
         el.style.transform = 'translateY(20px)';
@@ -1464,8 +1640,9 @@ style.textContent = \`
 }
 
 .nav.scrolled {
-    background: rgba(255, 255, 255, 0.98);
+    background: var(--background);
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    opacity: 0.98;
 }
 
 @media (max-width: 768px) {
@@ -1504,22 +1681,31 @@ This portfolio website was generated using Portfolio Maker.
 - \`styles.css\` - Stylesheet with ${data.theme} theme
 - \`script.js\` - JavaScript for interactivity
 - \`README.md\` - This file
+- \`FORMSPREE_SETUP.md\` - Contact form setup instructions
 
 ## Setup Instructions
 
 1. Upload all files to your web server
-2. Update the contact form endpoint in \`script.js\` if needed
+2. **IMPORTANT**: Set up the contact form by following \`FORMSPREE_SETUP.md\`
 3. Replace placeholder images with your actual images
 4. Customize colors and styles in \`styles.css\` if desired
 
 ## Contact Form Setup
 
-The contact form is configured to work with the included PHP backend.
-To set up the contact form:
+${data.personalInfo.formspreeId ? `
+✅ **READY TO USE**: Your contact form is already configured with Formspree ID: \`${data.personalInfo.formspreeId}\`
 
-1. Upload the \`php-backend\` folder to your server
-2. Update the configuration in \`php-backend/config.php\`
-3. Update the form endpoint in \`script.js\`
+Your contact form will work immediately when you upload this portfolio to any web hosting service.
+` : `
+⚠️ **SETUP REQUIRED**: The contact form uses Formspree and needs setup to work properly.
+
+**Quick Setup (5 minutes):**
+1. Read the detailed instructions in \`FORMSPREE_SETUP.md\`
+2. Sign up at https://formspree.io (free account)
+3. Replace \`your-form-id\` in \`index.html\` with your Formspree ID
+
+**Note**: Replace \`your-form-id\` in the form action URL with your actual Formspree ID.
+`}
 
 ## Features
 
@@ -1549,6 +1735,93 @@ Built with ❤️ using Portfolio Maker
 `;
 
     zip.file('README.md', readme);
+
+    // Add Formspree setup instructions
+    const formspreeSetup = `# Contact Form Setup with Formspree
+
+${data.personalInfo.formspreeId ? `
+✅ **Your contact form is READY TO USE!**
+
+Your portfolio includes a contact form that is already configured with your Formspree ID: \`${data.personalInfo.formspreeId}\`
+
+The contact form will work immediately when you upload your portfolio to any web hosting service. No additional setup required!
+
+## What's Already Done
+
+- ✅ Formspree ID configured: \`${data.personalInfo.formspreeId}\`
+- ✅ Form action URL set correctly
+- ✅ All form fields properly named
+- ✅ Contact form ready for immediate use
+
+## Next Steps
+
+1. Upload your portfolio files to your web hosting
+2. Test the contact form by filling it out
+3. Check your email for form submissions
+
+## Need to Change Your Formspree ID?
+
+If you need to use a different Formspree form:
+1. Open \`index.html\`
+2. Find: \`action="https://formspree.io/f/${data.personalInfo.formspreeId}"\`
+3. Replace \`${data.personalInfo.formspreeId}\` with your new Formspree ID
+
+` : `
+Your portfolio includes a contact form that uses Formspree to handle form submissions. Follow these simple steps to make it work:`}
+
+## Quick Setup (5 minutes)
+
+### 1. Sign up for Formspree
+- Go to [https://formspree.io](https://formspree.io)
+- Create a free account (allows 50 submissions per month)
+- Click "New Form" to create a form
+
+### 2. Get Your Form ID (Step-by-Step)
+- After signing up, click **"New Form"** button
+- Give your form a name (e.g., "Portfolio Contact Form")
+- Click **"Create Form"**
+- You'll see your form endpoint URL: \`https://formspree.io/f/YOUR-FORM-ID\`
+- Your Form ID is the part after \`/f/\` (e.g., \`xpzgkqyw\`)
+- **Copy this Form ID** - you'll need it in the next step
+
+**Example**: If your URL is \`https://formspree.io/f/xpzgkqyw\`, then \`xpzgkqyw\` is your Form ID
+
+### 3. Update Your Portfolio
+- Open your \`index.html\` file
+- Find this line: \`<form class="contact-form" action="https://formspree.io/f/your-form-id" method="POST">\`
+- Replace \`your-form-id\` with your actual Formspree ID
+- Example: \`<form class="contact-form" action="https://formspree.io/f/xpzgkqyw" method="POST">\`
+
+### 4. Test Your Form
+- Upload your portfolio to your web hosting
+- Fill out the contact form and submit it
+- Check your email - you should receive the message!
+
+## Features Included
+
+✅ **Spam Protection** - Formspree includes built-in spam filtering
+✅ **Email Notifications** - Get emails when someone contacts you
+✅ **Mobile Friendly** - Works perfectly on all devices
+✅ **No Backend Required** - No PHP or server setup needed
+✅ **Free Plan Available** - 50 submissions per month at no cost
+
+## Troubleshooting
+
+**Form not working?**
+- Make sure you replaced \`your-form-id\` with your actual Formspree ID
+- Check that your website is uploaded to a web server (not just opened locally)
+- Verify your Formspree account is active
+
+**Not receiving emails?**
+- Check your spam folder
+- Verify the email address in your Formspree account
+- Make sure you confirmed your Formspree account via email
+
+---
+
+**Note**: Remember to replace \`your-form-id\` in the form action URL with your actual Formspree ID for the contact form to work properly.`;
+
+    zip.file('FORMSPREE_SETUP.md', formspreeSetup);
 
     // Generate and download zip
     const content = await zip.generateAsync({ type: 'blob' });
