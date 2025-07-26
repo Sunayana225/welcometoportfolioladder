@@ -130,7 +130,7 @@ export default function PortfolioForm({ onDataChange, initialData }: PortfolioFo
     mode: 'onChange',
   });
 
-  const { watch, handleSubmit, formState: { errors } } = form;
+  const { watch, handleSubmit } = form;
   const watchedData = watch();
 
   // Use a ref to track previous data to prevent unnecessary updates
@@ -290,7 +290,7 @@ export default function PortfolioForm({ onDataChange, initialData }: PortfolioFo
             {steps[currentStep].title}
           </h2>
           <p className="text-white/80 text-lg">
-            Step {currentStep + 1} of {steps.length} • {steps[currentStep].description || 'Complete this section to continue'}
+            Step {currentStep + 1} of {steps.length} • Complete this section to continue
           </p>
         </motion.div>
       </div>

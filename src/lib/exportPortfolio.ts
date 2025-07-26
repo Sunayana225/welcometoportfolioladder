@@ -78,8 +78,9 @@ export function generatePortfolioHTML(data: PortfolioData): string {
     }
   };
 
-  const colors = getThemeColors();
-  const isDark = theme === 'dark';
+  // Theme colors will be handled by CSS variables
+  // const colors = getThemeColors();
+  // const isDark = theme === 'dark';
 
   const formatDate = (dateString: string) => {
     if (!dateString) return '';
