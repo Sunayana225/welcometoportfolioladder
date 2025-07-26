@@ -1,7 +1,25 @@
 {
   "name": "portfolio-maker",
-  "version": "0.1.0",
-  "private": true,
+  "version": "1.0.0",
+  "description": "Create stunning, professional portfolio websites in minutes without any coding knowledge!",
+  "author": "Sunayana <yakkalasunayana1605@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Sunayana225/welcometoportfolioladder.git"
+  },
+  "homepage": "https://github.com/Sunayana225/welcometoportfolioladder",
+  "keywords": [
+    "portfolio",
+    "website-builder",
+    "nextjs",
+    "react",
+    "typescript",
+    "tailwindcss",
+    "no-code",
+    "portfolio-generator"
+  ],
+  "private": false,
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
